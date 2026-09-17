@@ -1,6 +1,16 @@
 # kontakt.
 
-Kleine Kontaktverwaltung als Ausgangspunkt für einen Workshop zu Quality & Observability.
+Dieses Demo-Repository begleitet den Kurs **Quality & Observability im Agentic Engineering**
+von **Stefan Grothkopp** bei der [Digitale Leute School](https://school.digitale-leute.de/).
+An einer kleinen Kontaktverwaltung verbessern wir im Workshop einen Pull Request schrittweise:
+mit klaren Anforderungen, automatischen Tests, CI-Workflows, Evals und Code-Reviews.
+
+- [Digitale Leute](https://www.digitale-leute.de/)
+- [Stefan Grothkopp – Homepage](https://grothkopp.com/)
+- [Stefan Grothkopp auf LinkedIn](https://www.linkedin.com/in/grothkopp/)
+
+Die Anwendung ist bewusst einfach gehalten und dient als Ausgangslage für die Kursübungen.
+
 Python 3.13, Django 5.2 LTS, SQLite und uv. Keine JavaScript-Abhängigkeiten, kein Frontend-Build,
 keine externen Schriften oder Dienste.
 
@@ -83,16 +93,14 @@ vorinstalliert: deren Aufbau bleibt Teil des Workshops.
 - `static/app.css`: das gesamte Styling.
 - `contacts/fixtures/demo.json`: wiederholbar ladbare Demodaten.
 
-## Später auf GitHub veröffentlichen
+## Repository
 
-Das Verzeichnis ist als eigenständiges Git-Repository vorbereitet. Ein Remote ist noch nicht gesetzt.
-Nach Anlegen eines leeren GitHub-Repositories:
+[grothkopp/kontakt-demo auf GitHub](https://github.com/grothkopp/kontakt-demo)
 
 ```sh
-git remote add origin <URL-DES-REPOSITORIES>
-git push -u origin main
+git clone https://github.com/grothkopp/kontakt-demo.git
+cd kontakt-demo
 ```
 
-Veröffentliche nur dieses Unterverzeichnis. Der übergeordnete Workspace und Trainerunterlagen
-gehören nicht zum App-Repository. Die bewusst öffentlichen Fixture-Zugangsdaten sind keine
-Zugangsdaten zu einem realen Dienst.
+Danach die Schritte unter **Starten** ausführen. Die bewusst öffentlichen Fixture-Zugangsdaten
+sind keine Zugangsdaten zu einem realen Dienst.
