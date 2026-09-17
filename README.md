@@ -104,3 +104,30 @@ cd kontakt-demo
 
 Danach die Schritte unter **Starten** ausführen. Die bewusst öffentlichen Fixture-Zugangsdaten
 sind keine Zugangsdaten zu einem realen Dienst.
+
+## Browser-Tests (Workshop-Backup)
+
+```sh
+uv sync --locked --group e2e
+uv run --group e2e python -m playwright install chromium
+uv run --group e2e python manage.py test e2e.browser_tests
+# Optional mit sichtbarem Browser:
+HEADED=1 uv run --group e2e python manage.py test e2e.browser_tests
+```
+
+Django startet selbst einen Testserver mit separater Testdatenbank und Fixtures.
+Kein laufender Entwicklungsserver und kein manuelles Laden der Daten nötig.
+`uv run manage.py test` führt weiterhin nur die schnellen Django-Tests aus.
+Unter Linux installiert `playwright install --with-deps chromium` auch Systempakete.
+
+Auf dem unveränderten Filter-Stand schlagen zwei Browser-Tests absichtlich aufgrund
+der bestehenden Anwendungsfehler fehl; Login/Logout und ungefilterte Nutzertrennung
+bestehen. Nach Korrektur der Anwendung sollen alle vier Tests grün sein.
+Die GitHub Action führt dieselben Tests aus und lädt Traces auch bei Fehlern hoch.
+Traces liegen lokal unter `output/playwright/`; öffnen mit:
+
+```sh
+uv run --group e2e python -m playwright show-trace output/playwright/test_filtered_count_and_reset.zip
+```
+
+Die Suite enthält nur synthetische Daten. Traces nicht mit echten Kontaktdaten teilen.
