@@ -1,0 +1,20 @@
+schema: spec-driven
+context: |
+  Contact demo for a three-hour engineering workshop.
+  Python 3.13, uv, Django 5.2, SQLite, Django templates and local CSS.
+  Standard Django authentication; each user owns their contacts.
+  Two synthetic demo users (Anna and Ben), three contacts each.
+  Follow AGENTS.md, imported by CLAUDE.md. Keep the app small.
+  Use uv for Python; npm is only used for the pinned OpenSpec CLI.
+rules:
+  proposal:
+    - State the user problem, scope and non-goals before proposing implementation.
+  specs:
+    - Define observable acceptance scenarios, including failures and owner isolation.
+    - Make unresolved product decisions explicit; do not silently invent requirements.
+  design:
+    - Explain data boundaries and tradeoffs; prefer existing Django facilities.
+    - For AI features define a deterministic test double, timeout and safe fallback.
+  tasks:
+    - Include tests linked to acceptance scenarios and a human review of the plan.
+    - For AI features include example-based evals before enabling a live provider.

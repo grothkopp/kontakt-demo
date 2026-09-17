@@ -104,3 +104,43 @@ cd kontakt-demo
 
 Danach die Schritte unter **Starten** ausführen. Die bewusst öffentlichen Fixture-Zugangsdaten
 sind keine Zugangsdaten zu einem realen Dienst.
+
+## OpenSpec (Workshop-Backup)
+
+Voraussetzung: Node.js >= 20.19; `.nvmrc` legt 20.20.2 für nvm fest.
+Die App bleibt eine Python-/Django-App. npm wird nur für OpenSpec benötigt.
+
+```sh
+# Optional bei installiertem nvm:
+nvm use
+npm ci
+npm run openspec -- --version
+npm run openspec -- list
+```
+
+OpenSpec **1.13.1** ist lokal und exakt über `package-lock.json` festgelegt.
+Die Initialisierung für Claude Code ist bereits eingecheckt: `openspec/config.yaml`
+sowie sechs Befehle und Skills in `.claude/`. Nach dem Checkout Claude Code neu
+starten, damit die Befehle geladen werden. Eine globale Installation ist unnötig.
+`list` meldet zunächst erwartungsgemäß keine aktiven Änderungen.
+
+In Claude Code zum Beispiel:
+
+```text
+/opsx:propose Ein Vorschlag für Kontakt-Tags: Der Nutzer fordert ihn explizit
+an, prüft ihn und bestätigt ihn. Keine automatische Speicherung. Beginne mit
+einem deterministischen Fake-Provider; ein Live-Modell ist nicht Teil der Demo.
+```
+
+Vor der Umsetzung gemeinsam `proposal.md`, `specs/<capability>/spec.md`,
+`design.md` und `tasks.md` unter `openspec/changes/<change>/` prüfen.
+Diese Dateien entstehen erst beim Vorschlag; dieses Backup enthält bewusst
+noch kein vorweggenommenes Feature. Danach:
+
+```sh
+npm run openspec -- validate <change> --strict
+```
+
+Die formale Validierung ersetzt kein fachliches Review. Erst nach Klärung der
+Akzeptanzkriterien mit `/opsx:apply` implementieren; `/opsx:archive` nach Abnahme.
+Der Ausgangspunkt dieses Backups ist `main`, ohne den Filter aus dem Übungs-PR.

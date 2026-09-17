@@ -8,3 +8,4 @@ __pycache__/
 .DS_Store
 output/
 .playwright-cli/
+node_modules/
