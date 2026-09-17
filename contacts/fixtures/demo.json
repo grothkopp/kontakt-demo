@@ -1,0 +1,114 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "anna",
+      "first_name": "Anna",
+      "last_name": "Weber",
+      "email": "anna@example.test",
+      "password": "pbkdf2_sha256$1000000$vOZEQD91V7BMtPlxjnV4Sn$38Y6naq/A1+zhU5EFpaPRgiWYOa1HXUt/T0LkXu4F8E=",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2026-09-01T08:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "ben",
+      "first_name": "Ben",
+      "last_name": "Fischer",
+      "email": "ben@example.test",
+      "password": "pbkdf2_sha256$1000000$Y0tQgorFXs0xFdLxnCZgnn$9sAOivSBHoRK7hQWKoobUFfcYgza1WVYp/89JbqKIFE=",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2026-09-01T08:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "contacts.contact",
+    "pk": 1,
+    "fields": {
+      "owner": 1,
+      "name": "Clara Hoffmann",
+      "company": "Studio Nord",
+      "role": "Geschäftsführerin",
+      "email": "clara@studionord.example",
+      "tag": "customer",
+      "note": "Gemeinsames Projekt für den Herbst besprechen."
+    }
+  },
+  {
+    "model": "contacts.contact",
+    "pk": 2,
+    "fields": {
+      "owner": 1,
+      "name": "Jonas Berg",
+      "company": "Form & Feld",
+      "role": "Design Director",
+      "email": "jonas@formfeld.example",
+      "tag": "partner",
+      "note": "Guter Austausch über das neue Markenprojekt."
+    }
+  },
+  {
+    "model": "contacts.contact",
+    "pk": 3,
+    "fields": {
+      "owner": 1,
+      "name": "Mila Schneider",
+      "company": "Morgenwerk",
+      "role": "Product Lead",
+      "email": "mila@morgenwerk.example",
+      "tag": "lead",
+      "note": "Interesse an einem ersten Kennenlernen."
+    }
+  },
+  {
+    "model": "contacts.contact",
+    "pk": 4,
+    "fields": {
+      "owner": 2,
+      "name": "David Neumann",
+      "company": "Küstenwerk",
+      "role": "Gründer",
+      "email": "david@kuestenwerk.example",
+      "tag": "customer",
+      "note": "Ideen für die nächste Zusammenarbeit sammeln."
+    }
+  },
+  {
+    "model": "contacts.contact",
+    "pk": 5,
+    "fields": {
+      "owner": 2,
+      "name": "Lea Richter",
+      "company": "Lichtblick",
+      "role": "Projektleiterin",
+      "email": "lea@lichtblick.example",
+      "tag": "customer",
+      "note": "Rückmeldung zum Konzept in der kommenden Woche."
+    }
+  },
+  {
+    "model": "contacts.contact",
+    "pk": 6,
+    "fields": {
+      "owner": 2,
+      "name": "Noah Winter",
+      "company": "Weitblick",
+      "role": "Strategie & Beratung",
+      "email": "noah@weitblick.example",
+      "tag": "partner",
+      "note": "Kontakt aus dem letzten Netzwerkabend."
+    }
+  }
+]
