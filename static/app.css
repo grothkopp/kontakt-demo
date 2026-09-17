@@ -669,3 +669,31 @@ td {
   }
 }
 
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 25px 20px;
+  font-size: 12px;
+}
+.filter-bar select {
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #dce2eb;
+  border-radius: 7px;
+  padding: 8px 12px;
+}
+.filter-bar button {
+  background: #4164ec;
+  color: #fff;
+  border: 0;
+  border-radius: 7px;
+  padding: 9px 16px;
+}
+.filter-bar a {
+  color: #68778a;
+  text-decoration: underline;
+}

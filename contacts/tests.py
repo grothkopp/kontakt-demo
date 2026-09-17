@@ -53,3 +53,11 @@ class ContactTests(TestCase):
         response = self.client.get("/")
         self.assertContains(response, "Noch keine Kontakte")
         self.assertEqual(response.context["contact_count"], 0)
+
+    def test_filter_by_tag(self):
+        self.client.login(username="anna", password="Workshop-2026!")
+        response = self.client.get(reverse("contacts"), {"tag": "lead"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "mila@morgenwerk.example")
+        self.assertNotContains(response, "clara@studionord.example")
+        self.assertNotContains(response, "jonas@formfeld.example")
