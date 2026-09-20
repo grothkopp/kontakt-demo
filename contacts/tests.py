@@ -41,7 +41,7 @@ class ContactTests(TestCase):
 
     def test_invalid_password_and_external_redirect(self):
         response = self.client.post(reverse("login"), {"username": "anna", "password": "wrong"})
-        self.assertContains(response, "Benutzername und Passwort passen nicht zusammen")
+        self.assertContains(response, "The username and password do not match")
         response = self.client.post(reverse("login"), {
             "username": "anna", "password": "Workshop-2026!", "next": "https://example.org/",
         })
@@ -51,5 +51,5 @@ class ContactTests(TestCase):
         user = get_user_model().objects.create_user(username="empty", password="Another-test-password!")
         self.client.force_login(user)
         response = self.client.get("/")
-        self.assertContains(response, "Noch keine Kontakte")
+        self.assertContains(response, "No contacts")
         self.assertEqual(response.context["contact_count"], 0)

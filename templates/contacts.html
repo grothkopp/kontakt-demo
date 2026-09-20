@@ -3,33 +3,33 @@
 <div class="app-layout">
   <aside class="sidebar">
     <a class="brand" href="{% url 'contacts' %}"><span class="brand-icon">k.</span> kontakt<span class="brand-dot">.</span></a>
-    <p class="nav-label">ARBEITSBEREICH</p>
-    <nav aria-label="Hauptnavigation"><a class="nav-active" href="{% url 'contacts' %}" aria-current="page"><span aria-hidden="true">▦</span> Kontakte <span class="nav-count">{{ contact_count }}</span></a></nav>
-    <div class="sidebar-note"><span class="tiny-dot"></span> Platz für gute Beziehungen.<p>Alle deine Kontakte.<br>Ein klarer Überblick.</p></div>
-    <div class="profile"><span class="avatar profile-avatar">{{ user.first_name|first }}</span><div><strong>{{ user.get_full_name }}</strong><small>Persönlicher Bereich</small></div></div>
-    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="logout" type="submit">Abmelden <span aria-hidden="true">↗</span></button></form>
+    <p class="nav-label">WORKSPACE</p>
+    <nav aria-label="Main navigation"><a class="nav-active" href="{% url 'contacts' %}" aria-current="page"><span aria-hidden="true">▦</span> Contacts <span class="nav-count">{{ contact_count }}</span></a></nav>
+    <div class="sidebar-note"><span class="tiny-dot"></span> Room for good relationships.<p>All your contacts.<br>One clear overview.</p></div>
+    <div class="profile"><span class="avatar profile-avatar">{{ user.first_name|first }}</span><div><strong>{{ user.get_full_name }}</strong><small>Personal workspace</small></div></div>
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="logout" type="submit">Sign out <span aria-hidden="true">↗</span></button></form>
   </aside>
   <main class="workspace">
-    <header class="topbar"><span>Arbeitsbereich <span class="breadcrumb">/</span> <strong>Kontakte</strong></span><span class="private-label"><span class="tiny-dot"></span> Nur für dich</span></header>
+    <header class="topbar"><span>Workspace <span class="breadcrumb">/</span> <strong>Contacts</strong></span><span class="private-label"><span class="tiny-dot"></span> Only for you</span></header>
     <div class="content">
-      <p class="eyebrow">DEIN NETZWERK, GUT SORTIERT</p>
-      <div class="page-heading"><div><h1>Gute Kontakte.<br><span>Alles im Blick.</span></h1><p class="muted">Hallo {{ user.first_name }}. Hier sind die Menschen, mit denen du etwas bewegst.</p></div><span class="decorative-mark" aria-hidden="true">✳</span></div>
-      <section class="stats" aria-label="Kontaktübersicht">
-        <div><span>Kontakte</span><strong>{{ contact_count|stringformat:"02d" }}</strong><small>In deinem Netzwerk</small></div>
-        <div><span>Unternehmen</span><strong>{{ company_count|stringformat:"02d" }}</strong><small>Mit denen du verbunden bist</small></div>
-        <div><span>Kunden</span><strong>{{ customer_count|stringformat:"02d" }}</strong><small>Bestehende Beziehungen</small></div>
+      <p class="eyebrow">YOUR NETWORK, WELL ORGANIZED</p>
+      <div class="page-heading"><div><h1>Good connections.<br><span>All in one place.</span></h1><p class="muted">Hi {{ user.first_name }}. Here are the people you work with.</p></div><span class="decorative-mark" aria-hidden="true">✳</span></div>
+      <section class="stats" aria-label="Contact overview">
+        <div><span>Contacts</span><strong>{{ contact_count|stringformat:"02d" }}</strong><small>In your network</small></div>
+        <div><span>Companies</span><strong>{{ company_count|stringformat:"02d" }}</strong><small>In your network</small></div>
+        <div><span>Customers</span><strong>{{ customer_count|stringformat:"02d" }}</strong><small>Existing relationships</small></div>
       </section>
       <section class="contact-section" aria-labelledby="list-title">
-        <div class="section-heading"><h2 id="list-title">Alle Kontakte <span>{{ contact_count }}</span></h2><span class="sort-label">Alphabetisch nach Name</span></div>
-        <div class="table-scroll"><table><thead><tr><th scope="col">Name</th><th scope="col">Unternehmen</th><th scope="col">E-Mail</th><th scope="col">Tag</th></tr></thead><tbody>
+        <div class="section-heading"><h2 id="list-title">All contacts <span>{{ contact_count }}</span></h2><span class="sort-label">Alphabetical by name</span></div>
+        <div class="table-scroll"><table><thead><tr><th scope="col">Name</th><th scope="col">Company</th><th scope="col">Email</th><th scope="col">Tag</th></tr></thead><tbody>
         {% for contact in contacts %}
           <tr><td><div class="person"><span class="avatar avatar-{{ contact.tag }}">{{ contact.name|first }}</span><div><strong>{{ contact.name }}</strong><small>{{ contact.role }}</small></div></div></td><td>{{ contact.company }}</td><td><a class="email" href="mailto:{{ contact.email }}">{{ contact.email }}</a></td><td><span class="tag tag-{{ contact.tag }}">{{ contact.get_tag_display }}</span></td></tr>
-          <tr class="note-row"><td colspan="4"><span class="note-label">NOTIZ</span>{{ contact.note|default:"Noch keine Notiz." }}</td></tr>
-        {% empty %}<tr><td colspan="4" class="empty">Noch keine Kontakte in deinem Arbeitsbereich.</td></tr>{% endfor %}
+          <tr class="note-row"><td colspan="4"><span class="note-label">NOTE</span>{{ contact.note|default:"No note yet." }}</td></tr>
+        {% empty %}<tr><td colspan="4" class="empty">No contacts in your workspace yet.</td></tr>{% endfor %}
         </tbody></table></div>
-        <footer class="list-footer">{{ contact_count }} Kontakt{{ contact_count|pluralize:",e" }} <span>Dein Netzwerk. Dein Überblick.</span></footer>
+        <footer class="list-footer">{{ contact_count }} contact{{ contact_count|pluralize }} <span>Your network. Your overview.</span></footer>
       </section>
-      <p class="bottom-note">Für die nächste gute Verbindung.</p>
+      <p class="bottom-note">Here’s to your next good connection.</p>
     </div>
   </main>
 </div>
