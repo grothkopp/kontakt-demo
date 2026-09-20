@@ -1,0 +1,27 @@
+name: Browser tests
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --locked --group e2e
+      - run: uv run --group e2e python -m playwright install --with-deps chromium
+      - run: uv run python manage.py test
+      - run: uv run --group e2e python manage.py test e2e.browser_tests
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-traces
+          path: output/playwright/
+          retention-days: 7

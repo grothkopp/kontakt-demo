@@ -82,3 +82,29 @@ redirects and the empty state. The filter branch adds a happy-path filter test.
 Use uv for Python dependencies. An optional external environment can be selected
 with `UV_PROJECT_ENVIRONMENT` when the checkout lives inside a notes workspace.
 The default `.venv` is suitable for normal standalone clones.
+
+## Browser tests (workshop backup)
+
+```sh
+uv sync --locked --group e2e
+uv run --group e2e python -m playwright install chromium
+uv run --group e2e python manage.py test e2e.browser_tests
+# Optional visible browser:
+HEADED=1 uv run --group e2e python manage.py test e2e.browser_tests
+```
+
+Django starts a test server with an isolated database and fixtures. No development
+server or manual fixture loading is needed. `uv run manage.py test` still runs only
+the fast Django suite. On Linux, `playwright install --with-deps chromium` also
+installs required system packages.
+
+On the unchanged filter branch, two browser tests detect the existing application
+issues. Sign-in/sign-out and unfiltered user isolation pass. After fixing the app,
+all four browser tests should pass. The GitHub workflow runs the same tests and
+uploads traces even when assertions fail.
+
+```sh
+uv run --group e2e python -m playwright show-trace output/playwright/test_filtered_count_and_reset.zip
+```
+
+Traces are saved under `output/playwright/`. Use only synthetic data in shared traces.
