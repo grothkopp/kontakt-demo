@@ -1,78 +1,64 @@
 # kontakt.
 
-Dieses Demo-Repository begleitet den Kurs **Quality & Observability im Agentic Engineering**
-von **Stefan Grothkopp** bei der [Digitale Leute School](https://school.digitale-leute.de/).
-An einer kleinen Kontaktverwaltung verbessern wir im Workshop einen Pull Request schrittweise:
-mit klaren Anforderungen, automatischen Tests, CI-Workflows, Evals und Code-Reviews.
+This demo repository accompanies **Quality & Observability in Agentic Engineering**,
+a workshop by **Stefan Grothkopp** at [Digitale Leute School](https://school.digitale-leute.de/).
+We use a small contact app to explore requirements, automated tests, CI workflows,
+evals and code review. Clone the repository to follow along live or revisit it later.
 
 - [Digitale Leute](https://www.digitale-leute.de/)
-- [Stefan Grothkopp – Homepage](https://grothkopp.com/)
-- [Stefan Grothkopp auf LinkedIn](https://www.linkedin.com/in/grothkopp/)
+- [Stefan Grothkopp](https://grothkopp.com/)
+- [LinkedIn](https://www.linkedin.com/in/grothkopp/)
 
-Die Anwendung ist bewusst einfach gehalten und dient als Ausgangslage für die Kursübungen.
+Python 3.13, Django 5.2, SQLite and uv. Server-rendered templates and local CSS.
+The workshop UI, documentation, fixture notes and test expectations are in English.
+Names of fictional people and companies remain unchanged.
 
-Python 3.13, Django 5.2 LTS, SQLite und uv. Keine JavaScript-Abhängigkeiten, kein Frontend-Build,
-keine externen Schriften oder Dienste.
-
-## Starten
-
-Im Verzeichnis dieses Repositories:
+## Clone and start
 
 ```sh
+git clone https://github.com/grothkopp/kontakt-demo.git
+cd kontakt-demo
 uv sync --locked
 uv run python manage.py migrate
 uv run python manage.py loaddata demo
 uv run python manage.py runserver
 ```
 
-Öffne http://127.0.0.1:8000/.
+Open http://127.0.0.1:8000/. Repository access is required to clone a private repository.
 
-Innerhalb des Obsidian-Workspaces kann die Umgebung außerhalb des Vaults liegen,
-damit dessen Strukturprüfung keine Python-Symlinks beanstandet. Dazu vor den obigen
-Befehlen setzen (in dieser Sitzung verwendet):
-
-```sh
-export UV_PROJECT_ENVIRONMENT=/tmp/dl-contact-demo-venv
-```
-
-Nach einem Neustart kann `/tmp` leer sein; `uv sync --locked` erstellt die Umgebung erneut.
-Außerhalb des Vaults ist die normale `.venv` ausreichend.
-
-| Benutzername | Passwort | Kontakte | Davon Kunden |
+| Username | Password | Contacts | Customers |
 | --- | --- | ---: | ---: |
 | anna | Workshop-2026! | 3 | 1 |
 | ben | Workshop-2026! | 3 | 2 |
 
-Die Demo-Zugangsdaten sind absichtlich öffentlich und werden auch auf der Loginseite angezeigt.
-Beide Nutzer sind gewöhnliche Django-Nutzer ohne Adminrechte. Alle Personen und Daten sind fiktiv.
-Das Projekt ist für lokalen Workshopbetrieb gedacht; die Einstellungen sind keine Produktionskonfiguration.
+These are intentionally public demo credentials, shown on the sign-in page.
+Both accounts are regular Django users without admin privileges. All data is fictional.
+The app is intended for local workshops, not production deployment.
 
-## Was funktioniert?
+## App and workshop stages
 
-- Anmeldung mit Django LoginView und Abmeldung per CSRF-geschütztem POST.
-- Kontaktliste, Tags und Notizen aus SQLite, strikt auf den angemeldeten Nutzer begrenzt.
-- Zähler für Kontakte, Unternehmen und Kunden aus den tatsächlich sichtbaren Daten.
-- Responsive Oberfläche mit lokalem CSS und leerem Zustand für Konten ohne Kontakte.
+The baseline on `main` includes Django sign-in/sign-out, per-user contact lists,
+summary counts, tags and notes. It has no contact editing, public API or AI feature.
+The filter PR adds filtering. Separate backup branches provide CI, regression tests,
+project rules, browser tests and OpenSpec. Backups are independent, not cumulative.
+See the current branch's files and pull request for its exact scope.
 
-Es gibt noch keinen Tag-Filter, keine Bearbeitung oder Neuanlage, keine REST-API, keine CI
-und keine E2E-Suite. Die Tags sind Labels. Diese Baseline enthält keine absichtlich eingebauten
-Fehler. Das Filterfeature kann später in einem eigenen PR entwickelt werden.
+## Data and reset
 
-## Daten und Neustart
+Schema migrations are in `contacts/migrations/`. The fixture in
+`contacts/fixtures/demo.json` contains two users with hashed passwords and six contacts.
+Load it explicitly after migrating; migrations do not create demo accounts automatically.
 
-Die Schema-Migration liegt in `contacts/migrations/`. Die Fixture `contacts/fixtures/demo.json`
-enthält zwei Nutzer mit gehashten Passwörtern und sechs Kontakte. Das Laden erfolgt bewusst
-separat von `migrate`, damit die Demo-Konten nicht ungefragt in jeder Datenbank angelegt werden.
+Run `uv run python manage.py loaddata demo` to restore the fixture records, including
+passwords and English notes. This overwrites those records but does not remove any
+additional records. After updating an existing checkout, run migrations and reload
+the fixture to see translated notes in your local database.
 
-`uv run python manage.py loaddata demo` stellt die Fixture-Datensätze wieder her. Das überschreibt
-auch die Passwörter der beiden Demo-Konten, löscht aber keine zusätzlich angelegten Datensätze.
-Für einen vollständigen lokalen Neustart: Server stoppen, die lokale Datei `db.sqlite3` entfernen,
-danach Migrationen und Fixture erneut laden.
+For a complete local reset, stop the server, remove your local `db.sqlite3`, then
+run migrations and load the fixture again. SQLite files, the virtual environment
+and the generated local Django secret are excluded from Git.
 
-SQLite-Datei, virtuelle Umgebung und der automatisch erzeugte lokale Django-Schlüssel bleiben
-außerhalb von Git. Der Schlüssel bleibt über Serverneustarts stabil.
-
-## Prüfen
+## Checks
 
 ```sh
 uv run python manage.py check
@@ -80,27 +66,19 @@ uv run python manage.py makemigrations --check --dry-run
 uv run python manage.py test
 ```
 
-Fünf Basistests prüfen Loginpflicht, Nutzertrennung, echten Login/Logout mit CSRF, ungültige
-Zugangsdaten und externe Weiterleitungen sowie den leeren Zustand. Keine GitHub-Workflows
-vorinstalliert: deren Aufbau bleibt Teil des Workshops.
+Tests use an isolated database and fixture data. The baseline tests cover sign-in
+requirements, user isolation, authentication and CSRF, invalid credentials, safe
+redirects and the empty state. The filter branch adds a happy-path filter test.
 
-## Orientierung
+## Project structure
 
-- `contacts/models.py`: ein Contact-Modell, ein Tag pro Kontakt.
-- `contacts/views.py`: eine geschützte Listenansicht.
-- `config/urls.py`: Liste, Login und Logout.
-- `templates/`: Basislayout und zwei Seiten.
-- `static/app.css`: das gesamte Styling.
-- `contacts/fixtures/demo.json`: wiederholbar ladbare Demodaten.
+- `contacts/models.py`: contacts and their owners.
+- `contacts/views.py`: authenticated contact list.
+- `contacts/tests.py`: Django tests.
+- `config/urls.py`: contacts, sign-in and sign-out routes.
+- `templates/` and `static/`: server-rendered interface and styling.
+- `contacts/fixtures/demo.json`: repeatable synthetic demo data.
 
-## Repository
-
-[grothkopp/kontakt-demo auf GitHub](https://github.com/grothkopp/kontakt-demo)
-
-```sh
-git clone https://github.com/grothkopp/kontakt-demo.git
-cd kontakt-demo
-```
-
-Danach die Schritte unter **Starten** ausführen. Die bewusst öffentlichen Fixture-Zugangsdaten
-sind keine Zugangsdaten zu einem realen Dienst.
+Use uv for Python dependencies. An optional external environment can be selected
+with `UV_PROJECT_ENVIRONMENT` when the checkout lives inside a notes workspace.
+The default `.venv` is suitable for normal standalone clones.
