@@ -27,21 +27,21 @@ class ContactBrowserTests(StaticLiveServerTestCase):
 
     def login(self, username="anna"):
         self.page.goto(self.live_server_url)
-        self.page.get_by_label("Benutzername").fill(username)
-        self.page.get_by_label("Passwort").fill("Workshop-2026!")
-        self.page.get_by_role("button", name="Anmelden", exact=True).click()
-        expect(self.page.get_by_role("heading", name="Alle Kontakte 3")).to_be_visible()
+        self.page.get_by_label("Username").fill(username)
+        self.page.get_by_label("Password").fill("Workshop-2026!")
+        self.page.get_by_role("button", name="Sign in", exact=True).click()
+        expect(self.page.get_by_role("heading", name="All contacts 3")).to_be_visible()
 
     def filter(self, tag):
         self.page.get_by_label("Tag", exact=True).select_option(tag)
-        self.page.get_by_role("button", name="Filtern", exact=True).click()
+        self.page.get_by_role("button", name="Filter", exact=True).click()
 
     def test_login_and_logout(self):
         self.login()
-        self.page.get_by_role("button", name="Abmelden").click()
-        expect(self.page.get_by_label("Passwort")).to_be_visible()
+        self.page.get_by_role("button", name="Sign out").click()
+        expect(self.page.get_by_label("Password")).to_be_visible()
         self.page.goto(self.live_server_url)
-        expect(self.page.get_by_label("Passwort")).to_be_visible()
+        expect(self.page.get_by_label("Password")).to_be_visible()
 
     def test_unfiltered_contacts_are_private(self):
         self.login("ben")
@@ -60,8 +60,8 @@ class ContactBrowserTests(StaticLiveServerTestCase):
         self.login()
         self.filter("lead")
         expect(self.page.locator('a[href^="mailto:"]')).to_have_count(1)
-        expect(self.page.get_by_role("heading", name="Gefilterte Kontakte 1")).to_be_visible()
-        expect(self.page.locator(".list-footer")).to_have_text("1 Kontakt Dein Netzwerk. Dein Überblick.")
-        self.page.get_by_role("link", name="Zurücksetzen").click()
-        expect(self.page.get_by_role("heading", name="Alle Kontakte 3")).to_be_visible()
+        expect(self.page.get_by_role("heading", name="Filtered contacts 1")).to_be_visible()
+        expect(self.page.locator(".list-footer")).to_have_text("1 contact Your network. Your overview.")
+        self.page.get_by_role("link", name="Reset").click()
+        expect(self.page.get_by_role("heading", name="All contacts 3")).to_be_visible()
         expect(self.page.locator('a[href^="mailto:"]')).to_have_count(3)

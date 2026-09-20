@@ -1,27 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Anmelden{% endblock %}
+{% block title %}Sign in{% endblock %}
 {% block body %}
 <main class="login-layout">
   <section class="login-story">
     <a class="brand" href="{% url 'contacts' %}"><span class="brand-icon">k.</span> kontakt<span class="brand-dot">.</span></a>
-    <div><p class="eyebrow">GUTE BEZIEHUNGEN BEGINNEN HIER</p><h1>Menschen.<br>Keine Datensätze.</h1><p class="story-copy">Dein kleiner Ort für Kontakte, Notizen und die nächste gute Zusammenarbeit.</p></div>
-    <p class="story-foot">Weniger verwalten. Mehr verbinden.</p>
+    <div><p class="eyebrow">GOOD RELATIONSHIPS START HERE</p><h1>People.<br>Worth keeping in touch.</h1><p class="story-copy">Your space for contacts, notes and your next collaboration.</p></div>
+    <p class="story-foot">Less admin. More connection.</p>
   </section>
   <section class="login-panel">
     <div class="login-card">
-      <p class="eyebrow">DEIN PERSÖNLICHER ARBEITSBEREICH</p>
-      <h2>Schön, dass du da bist.</h2><p class="muted">Melde dich an, um deine Kontakte zu sehen.</p>
-      {% if form.errors %}<p class="error" role="alert">Benutzername und Passwort passen nicht zusammen.</p>{% endif %}
+      <p class="eyebrow">YOUR PERSONAL WORKSPACE</p>
+      <h2>Welcome back.</h2><p class="muted">Sign in to see your contacts.</p>
+      {% if form.errors %}<p class="error" role="alert">The username and password do not match.</p>{% endif %}
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
-        <label for="username">Benutzername</label>
+        <label for="username">Username</label>
         <input id="username" name="username" value="{{ form.username.value|default_if_none:'' }}" autocomplete="username" required autofocus>
-        <label for="password">Passwort</label>
+        <label for="password">Password</label>
         <input id="password" name="password" type="password" autocomplete="current-password" required>
-        <button class="primary" type="submit">Anmelden <span aria-hidden="true">↗</span></button>
+        <button class="primary" type="submit">Sign in <span aria-hidden="true">↗</span></button>
       </form>
-      <aside class="demo-note"><strong>Zum Ausprobieren</strong><p>Benutzername: <code>anna</code> oder <code>ben</code><br>Passwort: <code>Workshop-2026!</code></p><small>Lokale Demo mit fiktiven Kontakten.</small></aside>
+      <aside class="demo-note"><strong>Try the demo</strong><p>Username: <code>anna</code> or <code>ben</code><br>Password: <code>Workshop-2026!</code></p><small>Local demo with fictional contacts.</small></aside>
     </div>
   </section>
 </main>
