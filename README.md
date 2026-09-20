@@ -82,3 +82,43 @@ redirects and the empty state. The filter branch adds a happy-path filter test.
 Use uv for Python dependencies. An optional external environment can be selected
 with `UV_PROJECT_ENVIRONMENT` when the checkout lives inside a notes workspace.
 The default `.venv` is suitable for normal standalone clones.
+
+## OpenSpec (workshop backup)
+
+Requires Node.js >=20.19. `.nvmrc` selects 20.20.2 for nvm users.
+The app remains Python/Django; npm is only used for the OpenSpec CLI.
+
+```sh
+# Optional, if nvm is installed:
+nvm use
+npm ci
+npm run openspec -- --version
+npm run openspec -- list
+```
+
+OpenSpec **1.13.1** is pinned locally in `package-lock.json`. Initialization and
+project context are committed in `openspec/config.yaml`, with agent integrations
+in the repository. Restart your coding agent after checkout to load its commands
+and skills. No global installation or repeated initialization is needed.
+
+Start with this short prompt in Claude Code:
+
+```text
+/opsx:explore I'd like to add AI-powered tag suggestions based on a contact's notes.
+Suggestions should only be available for the user's own contacts and must not change
+anything automatically. Let's explore a simple approach that we can use to demonstrate
+specs, tests and evals in the workshop.
+```
+
+Then use `/opsx:propose` to create the change. Review `proposal.md`,
+`specs/<capability>/spec.md`, `design.md` and `tasks.md` under
+`openspec/changes/<change>/` before implementing anything. This backup initializes
+the tooling; it does not include a completed feature.
+
+```sh
+npm run openspec -- validate <change> --strict
+```
+
+Structural validation does not replace a review of the requirements. After review,
+use `/opsx:apply`; archive the change only after verifying the implementation.
+This backup starts from `main`, without the filter from the exercise PR.

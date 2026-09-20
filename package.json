@@ -1,0 +1,7 @@
+{
+  "name": "kontakt-demo-workshop-tools",
+  "private": true,
+  "engines": { "node": ">=20.19.0" },
+  "scripts": { "openspec": "openspec" },
+  "devDependencies": { "@fission-ai/openspec": "1.13.1" }
+}
