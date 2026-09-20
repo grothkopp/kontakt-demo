@@ -4,9 +4,9 @@ from django.db import models
 
 class Contact(models.Model):
     class Tag(models.TextChoices):
-        CUSTOMER = "customer", "Kunde"
+        CUSTOMER = "customer", "Customer"
         PARTNER = "partner", "Partner"
-        LEAD = "lead", "Interessent"
+        LEAD = "lead", "Lead"
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="contacts")
     name = models.CharField(max_length=100)

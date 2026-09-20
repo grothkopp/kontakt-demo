@@ -18,5 +18,5 @@ class FilterContractTests(TestCase):
     def test_result_count_matches_filtered_contacts(self):
         response = self.client.get("/", {"tag": "lead"})
         self.assertContains(response, "mila@morgenwerk.example")
-        self.assertContains(response, 'Gefilterte Kontakte <span>1</span>')
-        self.assertContains(response, '1 Kontakt <span>Dein Netzwerk.')
+        self.assertContains(response, 'Filtered contacts <span>1</span>')
+        self.assertContains(response, '1 contact <span>Your network.')
