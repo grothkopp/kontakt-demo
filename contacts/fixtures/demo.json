@@ -40,10 +40,10 @@
       "owner": 1,
       "name": "Clara Hoffmann",
       "company": "Studio Nord",
-      "role": "Geschäftsführerin",
+      "role": "Managing Director",
       "email": "clara@studionord.example",
       "tag": "customer",
-      "note": "Gemeinsames Projekt für den Herbst besprechen."
+      "note": "Discuss a joint project for the autumn."
     }
   },
   {
@@ -56,7 +56,7 @@
       "role": "Design Director",
       "email": "jonas@formfeld.example",
       "tag": "partner",
-      "note": "Guter Austausch über das neue Markenprojekt."
+      "note": "Good conversation about the new branding project."
     }
   },
   {
@@ -69,7 +69,7 @@
       "role": "Product Lead",
       "email": "mila@morgenwerk.example",
       "tag": "lead",
-      "note": "Interesse an einem ersten Kennenlernen."
+      "note": "Interested in an introductory meeting."
     }
   },
   {
@@ -79,10 +79,10 @@
       "owner": 2,
       "name": "David Neumann",
       "company": "Küstenwerk",
-      "role": "Gründer",
+      "role": "Founder",
       "email": "david@kuestenwerk.example",
       "tag": "customer",
-      "note": "Ideen für die nächste Zusammenarbeit sammeln."
+      "note": "Collect ideas for our next collaboration."
     }
   },
   {
@@ -92,10 +92,10 @@
       "owner": 2,
       "name": "Lea Richter",
       "company": "Lichtblick",
-      "role": "Projektleiterin",
+      "role": "Project Manager",
       "email": "lea@lichtblick.example",
       "tag": "customer",
-      "note": "Rückmeldung zum Konzept in der kommenden Woche."
+      "note": "Feedback on the concept next week."
     }
   },
   {
@@ -105,10 +105,10 @@
       "owner": 2,
       "name": "Noah Winter",
       "company": "Weitblick",
-      "role": "Strategie & Beratung",
+      "role": "Strategy & Consulting",
       "email": "noah@weitblick.example",
       "tag": "partner",
-      "note": "Kontakt aus dem letzten Netzwerkabend."
+      "note": "Met at the last networking event."
     }
   }
 ]

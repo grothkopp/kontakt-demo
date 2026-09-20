@@ -61,3 +61,5 @@ Report what actually ran and any failures or unverified behavior. A green suite
 only proves its assertions, not overall correctness. Review the diff for unrelated
 changes. Keep PRs focused, explain behavior and verification, and leave merging
 to the human reviewer. Do not silently repair intentional workshop examples.
+
+Write all workshop-facing UI text, documentation, example notes and new specifications in English. Keep test selectors and expected messages consistent with the English UI.
