@@ -24,7 +24,26 @@
         <div class="table-scroll"><table><thead><tr><th scope="col">Name</th><th scope="col">Company</th><th scope="col">Email</th><th scope="col">Tag</th></tr></thead><tbody>
         {% for contact in contacts %}
           <tr><td><div class="person"><span class="avatar avatar-{{ contact.tag }}">{{ contact.name|first }}</span><div><strong>{{ contact.name }}</strong><small>{{ contact.role }}</small></div></div></td><td>{{ contact.company }}</td><td><a class="email" href="mailto:{{ contact.email }}">{{ contact.email }}</a></td><td><span class="tag tag-{{ contact.tag }}">{{ contact.get_tag_display }}</span></td></tr>
-          <tr class="note-row"><td colspan="4"><span class="note-label">NOTE</span>{{ contact.note|default:"No note yet." }}</td></tr>
+          <tr class="note-row"><td colspan="4">
+            <span class="note-label">NOTE</span>{{ contact.note|default:"No note yet." }}
+            <form class="suggestion-form" method="post" action="{% url 'suggest_contact_tag' contact.pk %}">
+              {% csrf_token %}
+              <button class="suggestion-button" type="submit" aria-label="Suggest tag for {{ contact.name }}">Suggest tag</button>
+              <span>Offline demo · Nothing is saved</span>
+            </form>
+            {% if suggestion_contact_id == contact.pk %}
+              <p class="suggestion-result" role="status">
+                <strong>Demo suggestion:</strong>
+                {% if suggestion.error %}
+                  Suggestion unavailable. Please try again.
+                {% elif suggestion.tag %}
+                  <span class="tag tag-{{ suggestion.tag }}">{{ suggestion.label }}</span>
+                {% else %}
+                  No clear suggestion
+                {% endif %}
+              </p>
+            {% endif %}
+          </td></tr>
         {% empty %}<tr><td colspan="4" class="empty">No contacts in your workspace yet.</td></tr>{% endfor %}
         </tbody></table></div>
         <footer class="list-footer">{{ contact_count }} contact{{ contact_count|pluralize }} <span>Your network. Your overview.</span></footer>

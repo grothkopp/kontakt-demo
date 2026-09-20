@@ -26,7 +26,7 @@ Handle timeout and expected provider-service errors with a retryable message; ma
 
 ### Transient display only
 
-Show “Tag vorschlagen” beside the note, and show the validated suggestion separately from the persisted tag. Show “Kein eindeutiger Vorschlag” for abstention and a German retry message for failure. A suggestion matching the current tag is still a valid result. There is no Apply button, save call, suggestion database field, session persistence, or shared result cache. Names, email addresses, company, current tag, owner identifiers, and other contacts are never passed to the provider.
+Show “Suggest tag” beside the note, and show the validated suggestion separately from the persisted tag. Show “No clear suggestion” for abstention and an English retry message for failure. A suggestion matching the current tag is still a valid result. There is no Apply button, save call, suggestion database field, session persistence, or shared result cache. Names, email addresses, company, current tag, owner identifiers, and other contacts are never passed to the provider.
 
 ### Eval design and category policy
 
@@ -51,3 +51,7 @@ No database migration or new dependency is anticipated. Implement locally, run t
 ## Open Questions
 
 No implementation-blocking question remains for this proposed scope. Display-only behavior, fake-only execution, the category policy, and the eval reporting policy are proposed decisions for human review before implementation. A live provider choice, live quality thresholds, and an explicit apply workflow are deferred to separate changes.
+
+## Review record
+
+The workshop owner requested implementation of this proposal and explicitly confirmed English suggestion messages to match the current app. The acceptance text has been updated accordingly; German eval examples remain as multilingual coverage. Display-only behavior, fake-only execution, category meanings, and eval reporting policy are unchanged.

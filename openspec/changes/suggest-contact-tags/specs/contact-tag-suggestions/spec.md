@@ -46,7 +46,7 @@ The system SHALL accept only an exact provider result with a single `tag` key wh
 - **THEN** the prior suggestion is no longer displayed and the provider is not called
 
 ### Requirement: Abstention and safe failure
-The system SHALL bypass the provider for empty or whitespace-only notes. Empty notes and valid null results SHALL display “Kein eindeutiger Vorschlag”. Timeouts, expected provider-service errors, and invalid output SHALL display a distinct recoverable German failure message without raw provider text or exception details. All these outcomes SHALL preserve every contact field.
+The system SHALL bypass the provider for empty or whitespace-only notes. Empty notes and valid null results SHALL display “No clear suggestion”. Timeouts, expected provider-service errors, and invalid output SHALL display a distinct recoverable English failure message without raw provider text or exception details. All these outcomes SHALL preserve every contact field.
 
 #### Scenario: Empty note
 - **WHEN** a user requests a suggestion for an owned contact whose note is empty or whitespace-only
