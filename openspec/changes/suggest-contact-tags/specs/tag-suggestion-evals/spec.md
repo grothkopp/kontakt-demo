@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Reviewed synthetic evaluation examples
-The workshop SHALL include a versioned dataset of 16 synthetic notes with unique IDs, expected existing tag or null, case category, and development or held-out split. At least four cases SHALL be held out from fake mappings and future prompt tuning. The dataset SHALL cover all three tags, empty notes, ambiguity, negation, conflicting evidence, and embedded instructions, with German examples matching the UI.
+The workshop SHALL include a versioned dataset of 16 synthetic notes with unique IDs, expected existing tag or null, case category, and development or held-out split. At least four cases SHALL be held out from fake mappings and future prompt tuning. The dataset SHALL cover all three tags, empty notes, ambiguity, negation, conflicting evidence, and embedded instructions, with English examples matching the UI and German examples for multilingual coverage.
 
 #### Scenario: Reviewable labeling policy
 - **WHEN** a facilitator reviews the dataset and its documentation

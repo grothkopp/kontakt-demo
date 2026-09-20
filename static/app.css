@@ -407,6 +407,32 @@ td {
   color:#aeb6c0;
 }
 
+.suggestion-form {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px;
+  color:#657383;
+}
+
+.suggestion-button {
+  border:1px solid #cbd5f3;
+  border-radius:6px;
+  background:#f4f6ff;
+  color:#3455b5;
+  padding:6px 10px;
+}
+
+.suggestion-button:hover {
+  background:#e9eeff;
+}
+
+.suggestion-result {
+  margin:10px 0 0;
+  color:#334253;
+}
+
 .list-footer {
   padding:15px 25px;
   color:#8995a2;
@@ -668,4 +694,3 @@ td {
     min-height:calc(100vh - 88px);
   }
 }
-

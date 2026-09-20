@@ -43,6 +43,24 @@ The filter PR adds filtering. Separate backup branches provide CI, regression te
 project rules, browser tests and OpenSpec. Backups are independent, not cumulative.
 See the current branch's files and pull request for its exact scope.
 
+This branch adds **display-only tag suggestions**. Click **Suggest tag** next to a
+contact's note to see a transient suggestion, abstention, or retryable error.
+Requests use authenticated, CSRF-protected POSTs and look up the contact by its
+owner before passing only the stored note to the provider. No contact fields are
+saved, and a fresh visit to the list clears the result.
+
+The UI labels this as an **offline demo**. Its deterministic fake recognizes six
+fixed example notes and abstains for other notes, including the baseline fixtures.
+There is no live AI service, API key, generated explanation, or apply action.
+
+```sh
+uv run python manage.py eval_tag_suggestions
+```
+
+See [the eval guide](evals/README.md) for example notes, label meanings, acceptance
+scenario/test links, the observed baseline, and prerequisites for future live-model
+evaluation. Fake results demonstrate the eval machinery, not live-model quality.
+
 ## Data and reset
 
 Schema migrations are in `contacts/migrations/`. The fixture in
@@ -112,8 +130,8 @@ specs, tests and evals in the workshop.
 
 Then use `/opsx:propose` to create the change. Review `proposal.md`,
 `specs/<capability>/spec.md`, `design.md` and `tasks.md` under
-`openspec/changes/<change>/` before implementing anything. This backup initializes
-the tooling; it does not include a completed feature.
+`openspec/changes/<change>/` before implementing anything. This branch includes
+the `suggest-contact-tags` artifacts and their offline implementation.
 
 ```sh
 npm run openspec -- validate <change> --strict
