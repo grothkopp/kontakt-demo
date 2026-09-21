@@ -11,12 +11,13 @@ def contact_list(request):
     selected_tag = request.GET.get("tag", "")
     visible_contacts = contacts
     if selected_tag:
-        visible_contacts = list(Contact.objects.filter(tag=selected_tag))
+        visible_contacts = [contact for contact in contacts if contact.tag == selected_tag]
     return render(request, "contacts.html", {
         "contacts": visible_contacts,
         "selected_tag": selected_tag,
         "tags": Contact.Tag.choices,
         "contact_count": len(contacts),
+        "visible_contact_count": len(visible_contacts),
         "customer_count": sum(contact.tag == Contact.Tag.CUSTOMER for contact in contacts),
         "company_count": len({contact.company for contact in contacts}),
     })

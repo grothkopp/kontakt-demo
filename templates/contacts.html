@@ -20,7 +20,7 @@
         <div><span>Customers</span><strong>{{ customer_count|stringformat:"02d" }}</strong><small>Existing relationships</small></div>
       </section>
       <section class="contact-section" aria-labelledby="list-title">
-        <div class="section-heading"><h2 id="list-title">{% if selected_tag %}Filtered contacts{% else %}All contacts{% endif %} <span>{{ contact_count }}</span></h2><span class="sort-label">Alphabetical by name</span></div>
+        <div class="section-heading"><h2 id="list-title">{% if selected_tag %}Filtered contacts{% else %}All contacts{% endif %} <span>{{ visible_contact_count }}</span></h2><span class="sort-label">Alphabetical by name</span></div>
         <form class="filter-bar" method="get" action="{% url 'contacts' %}">
           <label for="tag">Tag</label>
           <select id="tag" name="tag">
@@ -38,7 +38,7 @@
           <tr class="note-row"><td colspan="4"><span class="note-label">NOTE</span>{{ contact.note|default:"No note yet." }}</td></tr>
         {% empty %}<tr><td colspan="4" class="empty">No contacts in your workspace yet.</td></tr>{% endfor %}
         </tbody></table></div>
-        <footer class="list-footer">{{ contact_count }} contact{{ contact_count|pluralize }} <span>Your network. Your overview.</span></footer>
+        <footer class="list-footer">{{ visible_contact_count }} contact{{ visible_contact_count|pluralize }} <span>Your network. Your overview.</span></footer>
       </section>
       <p class="bottom-note">Here’s to your next good connection.</p>
     </div>
