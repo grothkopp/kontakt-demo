@@ -19,3 +19,7 @@ jobs:
         run: uv sync --locked
       - name: Run tests
         run: uv run manage.py test
+      - name: Install Chromium
+        run: uv run playwright install --with-deps chromium
+      - name: Run browser tests
+        run: uv run python manage.py test e2e.contact_filter
