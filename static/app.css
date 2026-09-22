@@ -697,3 +697,24 @@ td {
   color: #68778a;
   text-decoration: underline;
 }
+
+.suggest-tag-form { display: inline-block; margin-left: 16px; }
+.suggest-tag-form button, .suggestion-actions button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #ccd4e1;
+  border-radius: 7px;
+  padding: 8px 12px;
+  background: #fff;
+  color: #304fbe;
+}
+.suggestion-notice { background: #eef3ff; padding: 16px; margin-bottom: 20px; border-radius: 8px; }
+.suggestion-notice a { margin-left: 12px; text-decoration: underline; }
+.suggestion-review { max-width: 680px; margin: 40px auto; padding: 32px; background: #fff; border-radius: 16px; }
+.suggestion-review .eyebrow { margin-top: 28px; }
+.suggestion-review h1 { font-size: 32px; }
+.suggestion-review dt { margin-top: 16px; color: #596579; }
+.suggestion-review dd { margin: 4px 0; font-weight: 600; }
+.suggestion-reason { padding: 20px 0; overflow-wrap: anywhere; }
+.suggestion-actions { display: flex; gap: 12px; margin-top: 24px; }
+.suggestion-actions form:first-child button { background: #4164ec; color: white; }

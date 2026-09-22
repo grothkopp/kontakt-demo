@@ -1,4 +1,5 @@
 """Settings for the local workshop demo. Bind runserver to localhost."""
+import os
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 
@@ -16,7 +17,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
 INSTALLED_APPS = [
     "django.contrib.auth", "django.contrib.contenttypes",
-    "django.contrib.sessions", "django.contrib.staticfiles", "contacts",
+    "django.contrib.sessions", "django.contrib.staticfiles", "django.contrib.messages", "contacts",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -24,6 +25,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 ROOT_URLCONF = "config.urls"
@@ -34,6 +36,7 @@ TEMPLATES = [{
     "OPTIONS": {"context_processors": [
         "django.template.context_processors.request",
         "django.contrib.auth.context_processors.auth",
+        "django.contrib.messages.context_processors.messages",
     ]},
 }]
 WSGI_APPLICATION = "config.wsgi.application"
@@ -54,3 +57,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "contacts"
 LOGOUT_REDIRECT_URL = "login"
+
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "").strip()
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "").strip()

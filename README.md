@@ -80,7 +80,7 @@ server or loaded demo database is needed.
 ```sh
 uv sync --locked
 uv run playwright install chromium
-uv run python manage.py test e2e.contact_filter
+uv run python manage.py test e2e.contact_filter e2e.tag_suggestions
 ```
 
 On Linux, use `uv run playwright install --with-deps chromium` to also install
@@ -93,10 +93,22 @@ also check reload persistence, the Reset link, All tags, and sign-in redirects
 from filtered URLs. Browser tests are explicitly selected with the command above;
 the default Django test command continues to run the fast suite.
 
+## AI tag suggestions on the workshop branch
+
+Use **Suggest tag** to review an OpenRouter recommendation based on an existing
+contact's company, role, current tag, and note. **Accept** changes the tag;
+**Decline** leaves it unchanged. Suggestions require explicit requests, and the
+app remains usable without AI configuration.
+
+See [AI tag suggestions](docs/ai-tag-suggestions.md) for environment setup, the
+review flow, transmitted fields, tests, synthetic evaluation examples, and rollback.
+The browser suite includes `e2e.tag_suggestions` with a fake provider and no API key.
+
 ## Project structure
 
 - `contacts/models.py`: contacts and their owners.
 - `contacts/views.py`: authenticated contact list.
+- `contacts/suggestions.py` and `contacts/suggestion_views.py`: OpenRouter adapter and review actions.
 - `contacts/tests.py`: Django tests.
 - `e2e/contact_filter.py`: Playwright browser tests for the filter branch.
 - `config/urls.py`: contacts, sign-in and sign-out routes.
