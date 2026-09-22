@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Review tag suggestion{% endblock %}
+{% block body %}
+<main class="suggestion-review">
+  <a href="{{ return_url }}">Back to contacts</a>
+  <p class="eyebrow">AI TAG SUGGESTION</p>
+  <h1>Review tag suggestion</h1>
+  <h2>{{ contact.name }}</h2>
+  <p>{{ contact.company }} · {{ contact.role }}</p>
+  <dl>
+    <dt>Current tag</dt><dd>{{ contact.get_tag_display }}</dd>
+    <dt>Suggested tag</dt><dd>{{ suggestion.get_proposed_tag_display }}</dd>
+  </dl>
+  <p class="suggestion-reason">{{ suggestion.explanation }}</p>
+  {% if stale %}
+    <p role="status">This suggestion is no longer current. Please request a new suggestion.</p>
+    <a href="{{ return_url }}">Dismiss</a>
+  {% else %}
+    <p>The contact stays unchanged until you accept.</p>
+    <div class="suggestion-actions">
+      <form method="post" action="{% url 'accept_tag' suggestion.pk %}">
+        {% csrf_token %}<input type="hidden" name="tag" value="{{ selected_tag }}">
+        <button type="submit">Accept</button>
+      </form>
+      <form method="post" action="{% url 'decline_tag' suggestion.pk %}">
+        {% csrf_token %}<input type="hidden" name="tag" value="{{ selected_tag }}">
+        <button type="submit">Decline</button>
+      </form>
+    </div>
+  {% endif %}
+</main>
+{% endblock %}

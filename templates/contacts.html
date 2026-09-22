@@ -12,6 +12,11 @@
   <main class="workspace">
     <header class="topbar"><span>Workspace <span class="breadcrumb">/</span> <strong>Contacts</strong></span><span class="private-label"><span class="tiny-dot"></span> Only for you</span></header>
     <div class="content">
+      {% for message in messages %}
+      {% if message.extra_tags == user.pk|stringformat:"s" %}
+      <aside class="suggestion-notice" role="status">{{ message }} <a href="{% url 'contacts' %}{% if selected_tag %}?tag={{ selected_tag|urlencode }}{% endif %}">Dismiss</a></aside>
+      {% endif %}
+      {% endfor %}
       <p class="eyebrow">YOUR NETWORK, WELL ORGANIZED</p>
       <div class="page-heading"><div><h1>Good connections.<br><span>All in one place.</span></h1><p class="muted">Hi {{ user.first_name }}. Here are the people you work with.</p></div><span class="decorative-mark" aria-hidden="true">✳</span></div>
       <section class="stats" aria-label="Contact overview">
@@ -20,14 +25,29 @@
         <div><span>Customers</span><strong>{{ customer_count|stringformat:"02d" }}</strong><small>Existing relationships</small></div>
       </section>
       <section class="contact-section" aria-labelledby="list-title">
-        <div class="section-heading"><h2 id="list-title">All contacts <span>{{ contact_count }}</span></h2><span class="sort-label">Alphabetical by name</span></div>
+        <div class="section-heading"><h2 id="list-title">{% if selected_tag %}Filtered contacts{% else %}All contacts{% endif %} <span>{{ visible_contact_count }}</span></h2><span class="sort-label">Alphabetical by name</span></div>
+        <form class="filter-bar" method="get" action="{% url 'contacts' %}">
+          <label for="tag">Tag</label>
+          <select id="tag" name="tag">
+            <option value="">All tags</option>
+            {% for value, label in tags %}
+              <option value="{{ value }}"{% if selected_tag == value %} selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Filter</button>
+          {% if selected_tag %}<a href="{% url 'contacts' %}">Reset</a>{% endif %}
+        </form>
         <div class="table-scroll"><table><thead><tr><th scope="col">Name</th><th scope="col">Company</th><th scope="col">Email</th><th scope="col">Tag</th></tr></thead><tbody>
         {% for contact in contacts %}
           <tr><td><div class="person"><span class="avatar avatar-{{ contact.tag }}">{{ contact.name|first }}</span><div><strong>{{ contact.name }}</strong><small>{{ contact.role }}</small></div></div></td><td>{{ contact.company }}</td><td><a class="email" href="mailto:{{ contact.email }}">{{ contact.email }}</a></td><td><span class="tag tag-{{ contact.tag }}">{{ contact.get_tag_display }}</span></td></tr>
-          <tr class="note-row"><td colspan="4"><span class="note-label">NOTE</span>{{ contact.note|default:"No note yet." }}</td></tr>
+          <tr class="note-row"><td colspan="4"><span class="note-label">NOTE</span>{{ contact.note|default:"No note yet." }}
+            <form class="suggest-tag-form" method="post" action="{% url 'suggest_tag' contact.pk %}">
+              {% csrf_token %}<input type="hidden" name="tag" value="{{ selected_tag }}">
+              <button type="submit" aria-label="Suggest tag for {{ contact.name }}">Suggest tag</button>
+            </form></td></tr>
         {% empty %}<tr><td colspan="4" class="empty">No contacts in your workspace yet.</td></tr>{% endfor %}
         </tbody></table></div>
-        <footer class="list-footer">{{ contact_count }} contact{{ contact_count|pluralize }} <span>Your network. Your overview.</span></footer>
+        <footer class="list-footer">{{ visible_contact_count }} contact{{ visible_contact_count|pluralize }} <span>Your network. Your overview.</span></footer>
       </section>
       <p class="bottom-note">Here’s to your next good connection.</p>
     </div>

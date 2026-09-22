@@ -68,13 +68,49 @@ uv run python manage.py test
 
 Tests use an isolated database and fixture data. The baseline tests cover sign-in
 requirements, user isolation, authentication and CSRF, invalid credentials, safe
-redirects and the empty state. The filter branch adds a happy-path filter test.
+redirects and the empty state. The filter branch adds regression tests for every
+tag, ownership isolation, result counts, and unchanged account summaries.
+
+### Browser tests on the filter branch
+
+The Playwright suite uses headless Chromium and Django's temporary test database
+and live server. It creates synthetic accounts and contacts; no running development
+server or loaded demo database is needed.
+
+```sh
+uv sync --locked
+uv run playwright install chromium
+uv run python manage.py test e2e.contact_filter e2e.tag_suggestions
+```
+
+On Linux, use `uv run playwright install --with-deps chromium` to also install
+browser system dependencies. Re-run browser installation after Playwright upgrades.
+CI runs both the fast Django suite and this separate browser suite.
+
+Browser tests sign in through the UI and cover every tag across multiple owners,
+shared tags, empty accounts, zero/one/multiple matches, and displayed counts. They
+also check reload persistence, the Reset link, All tags, and sign-in redirects
+from filtered URLs. Browser tests are explicitly selected with the command above;
+the default Django test command continues to run the fast suite.
+
+## AI tag suggestions on the workshop branch
+
+Use **Suggest tag** to review an OpenRouter recommendation based on an existing
+contact's company, role, current tag, and note. **Accept** changes the tag;
+**Decline** leaves it unchanged. Suggestions require explicit requests, and the
+app remains usable without AI configuration.
+
+See [AI tag suggestions](docs/ai-tag-suggestions.md) for environment setup, the
+review flow, transmitted fields, tests, synthetic evaluation examples, and rollback.
+The browser suite includes `e2e.tag_suggestions` with a fake provider and no API key.
 
 ## Project structure
 
 - `contacts/models.py`: contacts and their owners.
 - `contacts/views.py`: authenticated contact list.
+- `contacts/suggestions.py` and `contacts/suggestion_views.py`: OpenRouter adapter and review actions.
 - `contacts/tests.py`: Django tests.
+- `e2e/contact_filter.py`: Playwright browser tests for the filter branch.
 - `config/urls.py`: contacts, sign-in and sign-out routes.
 - `templates/` and `static/`: server-rendered interface and styling.
 - `contacts/fixtures/demo.json`: repeatable synthetic demo data.
