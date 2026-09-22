@@ -25,4 +25,10 @@ jobs:
         run: uv run --locked python manage.py check
 
       - name: Run Django tests
-        run: uv run --locked python manage.py test
+        run: uv run --locked python manage.py test --exclude-tag=e2e
+
+      - name: Install Chromium
+        run: uv run --locked playwright install --with-deps chromium
+
+      - name: Run Playwright end-to-end tests
+        run: uv run --locked python manage.py test --tag=e2e

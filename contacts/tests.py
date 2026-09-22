@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import Client, TestCase, tag
 from django.urls import reverse
+from playwright.sync_api import expect, sync_playwright
 from .models import Contact
 
 
@@ -121,3 +123,69 @@ class ContactFilterIsolationTests(TestCase):
             for params in ({}, {"tag": ""}, {"tag": "unknown-tag"}):
                 with self.subTest(user=user.username, params=params):
                     self.assert_visible_contacts(user, params)
+
+
+@tag("e2e")
+class ContactFilterBrowserTests(StaticLiveServerTestCase):
+    fixtures = ["demo"]
+
+    def test_filter_and_reset_preserve_user_isolation(self):
+        # Read fixture expectations before Playwright starts its event loop.
+        contacts = list(Contact.objects.select_related("owner"))
+        contacts_url = self.live_server_url + reverse("contacts")
+
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch()
+            try:
+                for username in ("anna", "ben"):
+                    with self.subTest(username=username), browser.new_context() as context:
+                        page = context.new_page()
+                        page.goto(contacts_url)
+                        page.get_by_label("Username", exact=True).fill(username)
+                        page.get_by_label("Password", exact=True).fill("Workshop-2026!")
+                        page.get_by_role("button", name="Sign in", exact=True).click()
+                        expect(page).to_have_url(contacts_url)
+
+                        own_contacts = [c for c in contacts if c.owner.username == username]
+                        foreign_contacts = [c for c in contacts if c.owner.username != username]
+                        table = page.get_by_role("table")
+                        emails = table.get_by_role("link")
+                        selector = page.get_by_label("Tag", exact=True)
+                        reset = page.get_by_role("link", name="Reset", exact=True)
+                        all_emails = [c.email for c in own_contacts]
+                        expect(emails).to_have_text(all_emails)
+
+                        for value, label in Contact.Tag.choices:
+                            with self.subTest(tag=value):
+                                selector.select_option(label=label)
+                                page.get_by_role("button", name="Filter", exact=True).click()
+                                expect(page).to_have_url(f"{contacts_url}?tag={value}")
+                                expect(selector).to_have_value(value)
+                                expected_emails = [c.email for c in own_contacts if c.tag == value]
+                                expect(emails).to_have_text(expected_emails)
+                                for contact in foreign_contacts:
+                                    expect(table).not_to_contain_text(contact.email)
+                                    expect(table).not_to_contain_text(contact.note)
+                                if not expected_emails:
+                                    expect(table).to_contain_text("No contacts in your workspace yet.")
+
+                                page.reload()
+                                expect(selector).to_have_value(value)
+                                expect(emails).to_have_text(expected_emails)
+                                reset.click()
+                                expect(page).to_have_url(contacts_url)
+                                expect(selector).to_have_value("")
+                                expect(emails).to_have_text(all_emails)
+                                expect(reset).to_have_count(0)
+
+                        selector.select_option(label="Customer")
+                        page.get_by_role("button", name="Filter", exact=True).click()
+                        expect(page).to_have_url(f"{contacts_url}?tag=customer")
+                        selector.select_option(label="All tags")
+                        page.get_by_role("button", name="Filter", exact=True).click()
+                        expect(page).to_have_url(f"{contacts_url}?tag=")
+                        expect(selector).to_have_value("")
+                        expect(emails).to_have_text(all_emails)
+                        expect(reset).to_have_count(0)
+            finally:
+                browser.close()
