@@ -11,7 +11,7 @@ def contact_list(request):
     selected_tag = request.GET.get("tag", "")
     visible_contacts = contacts
     if selected_tag:
-        visible_contacts = list(Contact.objects.filter(tag=selected_tag))
+        visible_contacts = [contact for contact in contacts if contact.tag == selected_tag]
     return render(request, "contacts.html", {
         "contacts": visible_contacts,
         "selected_tag": selected_tag,
