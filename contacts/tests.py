@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import Client, TestCase, tag
 from django.urls import reverse
+from playwright.sync_api import expect, sync_playwright
 from .models import Contact
 
 
@@ -53,3 +55,137 @@ class ContactTests(TestCase):
         response = self.client.get("/")
         self.assertContains(response, "No contacts")
         self.assertEqual(response.context["contact_count"], 0)
+
+    def test_filter_by_tag(self):
+        self.client.login(username="anna", password="Workshop-2026!")
+        response = self.client.get(reverse("contacts"), {"tag": "lead"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "mila@morgenwerk.example")
+        self.assertNotContains(response, "clara@studionord.example")
+        self.assertNotContains(response, "jonas@formfeld.example")
+
+
+class ContactFilterIsolationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = [
+            get_user_model().objects.create_user(username=username)
+            for username in ("first", "second", "sparse", "empty")
+        ]
+        cls.contacts = []
+        for user in cls.users:
+            tags = Contact.Tag.values
+            if user.username == "sparse":
+                tags = [Contact.Tag.LEAD]
+            elif user.username == "empty":
+                tags = []
+            for tag in tags:
+                identifier = f"{user.username}-{tag}"
+                cls.contacts.append(Contact.objects.create(
+                    owner=user,
+                    name=f"Name {identifier}",
+                    company=f"Company {identifier}",
+                    role=f"Role {identifier}",
+                    email=f"{identifier}@example.test",
+                    tag=tag,
+                    note=f"Private note {identifier}",
+                ))
+
+    def assert_visible_contacts(self, user, params):
+        response = self.client.get(reverse("contacts"), params)
+        self.assertEqual(response.status_code, 200)
+        selected_tag = params.get("tag", "")
+        expected = [
+            contact for contact in self.contacts
+            if contact.owner_id == user.pk
+            and (not selected_tag or contact.tag == selected_tag)
+        ]
+        # Verify both the data passed to the template and the rendered fields.
+        with self.subTest(surface="context"):
+            self.assertCountEqual(response.context["contacts"], expected)
+        with self.subTest(surface="page"):
+            for contact in self.contacts:
+                assertion = self.assertContains if contact in expected else self.assertNotContains
+                for field in ("name", "company", "role", "email", "note"):
+                    assertion(response, getattr(contact, field))
+
+    def test_tag_filters_preserve_contact_isolation_for_every_account(self):
+        # Shared tags catch leaks; sparse/empty accounts catch foreign-only matches.
+        for user in self.users:
+            self.client.force_login(user)
+            for tag in Contact.Tag.values:
+                with self.subTest(user=user.username, tag=tag):
+                    self.assert_visible_contacts(user, {"tag": tag})
+
+    def test_unfiltered_and_unknown_tag_requests_preserve_contact_isolation(self):
+        for user in self.users:
+            self.client.force_login(user)
+            for params in ({}, {"tag": ""}, {"tag": "unknown-tag"}):
+                with self.subTest(user=user.username, params=params):
+                    self.assert_visible_contacts(user, params)
+
+
+@tag("e2e")
+class ContactFilterBrowserTests(StaticLiveServerTestCase):
+    fixtures = ["demo"]
+
+    def test_filter_and_reset_preserve_user_isolation(self):
+        # Read fixture expectations before Playwright starts its event loop.
+        contacts = list(Contact.objects.select_related("owner"))
+        contacts_url = self.live_server_url + reverse("contacts")
+
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch()
+            try:
+                for username in ("anna", "ben"):
+                    with self.subTest(username=username), browser.new_context() as context:
+                        page = context.new_page()
+                        page.goto(contacts_url)
+                        page.get_by_label("Username", exact=True).fill(username)
+                        page.get_by_label("Password", exact=True).fill("Workshop-2026!")
+                        page.get_by_role("button", name="Sign in", exact=True).click()
+                        expect(page).to_have_url(contacts_url)
+
+                        own_contacts = [c for c in contacts if c.owner.username == username]
+                        foreign_contacts = [c for c in contacts if c.owner.username != username]
+                        table = page.get_by_role("table")
+                        emails = table.get_by_role("link")
+                        selector = page.get_by_label("Tag", exact=True)
+                        reset = page.get_by_role("link", name="Reset", exact=True)
+                        all_emails = [c.email for c in own_contacts]
+                        expect(emails).to_have_text(all_emails)
+
+                        for value, label in Contact.Tag.choices:
+                            with self.subTest(tag=value):
+                                selector.select_option(label=label)
+                                page.get_by_role("button", name="Filter", exact=True).click()
+                                expect(page).to_have_url(f"{contacts_url}?tag={value}")
+                                expect(selector).to_have_value(value)
+                                expected_emails = [c.email for c in own_contacts if c.tag == value]
+                                expect(emails).to_have_text(expected_emails)
+                                for contact in foreign_contacts:
+                                    expect(table).not_to_contain_text(contact.email)
+                                    expect(table).not_to_contain_text(contact.note)
+                                if not expected_emails:
+                                    expect(table).to_contain_text("No contacts in your workspace yet.")
+
+                                page.reload()
+                                expect(selector).to_have_value(value)
+                                expect(emails).to_have_text(expected_emails)
+                                reset.click()
+                                expect(page).to_have_url(contacts_url)
+                                expect(selector).to_have_value("")
+                                expect(emails).to_have_text(all_emails)
+                                expect(reset).to_have_count(0)
+
+                        selector.select_option(label="Customer")
+                        page.get_by_role("button", name="Filter", exact=True).click()
+                        expect(page).to_have_url(f"{contacts_url}?tag=customer")
+                        selector.select_option(label="All tags")
+                        page.get_by_role("button", name="Filter", exact=True).click()
+                        expect(page).to_have_url(f"{contacts_url}?tag=")
+                        expect(selector).to_have_value("")
+                        expect(emails).to_have_text(all_emails)
+                        expect(reset).to_have_count(0)
+            finally:
+                browser.close()

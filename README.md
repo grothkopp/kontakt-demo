@@ -60,7 +60,12 @@ and the generated local Django secret are excluded from Git.
 
 ## Checks
 
+Install the locked development dependencies and Playwright's Chromium browser
+before running the full test suite:
+
 ```sh
+uv sync --locked
+uv run playwright install chromium
 uv run python manage.py check
 uv run python manage.py makemigrations --check --dry-run
 uv run python manage.py test
@@ -68,7 +73,20 @@ uv run python manage.py test
 
 Tests use an isolated database and fixture data. The baseline tests cover sign-in
 requirements, user isolation, authentication and CSRF, invalid credentials, safe
-redirects and the empty state. The filter branch adds a happy-path filter test.
+redirects and the empty state. This filter branch also checks every tag across
+multiple accounts, including empty accounts and missing matches, for contact isolation.
+
+The Playwright end-to-end test uses Django's live test server and an isolated test
+database; it does not require a running app or modify your local demo database.
+It signs in through the browser as both demo users, filters by every tag, checks
+that other users' contacts and notes stay hidden, and exercises reload, Reset,
+and All tags. Ben's Lead filter covers the no-match state.
+
+Run just the browser test with `uv run python manage.py test --tag=e2e`, or skip
+browser tests with `uv run python manage.py test --exclude-tag=e2e`. On Linux,
+use `uv run playwright install --with-deps chromium` to install browser system
+dependencies too. After updating Playwright, rerun the browser installation command.
+The GitHub workflow runs both suites as separate steps in one run per PR push.
 
 ## Project structure
 
