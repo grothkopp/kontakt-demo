@@ -1,0 +1,28 @@
+name: Django tests
+
+# Use only pull_request so pushes to a PR do not also trigger a push run.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10
+
+      - name: Install Python and dependencies
+        run: uv sync --locked
+
+      - name: Run Django checks
+        run: uv run --locked python manage.py check
+
+      - name: Run Django tests
+        run: uv run --locked python manage.py test
