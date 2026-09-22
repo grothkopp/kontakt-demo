@@ -61,3 +61,63 @@ class ContactTests(TestCase):
         self.assertContains(response, "mila@morgenwerk.example")
         self.assertNotContains(response, "clara@studionord.example")
         self.assertNotContains(response, "jonas@formfeld.example")
+
+
+class ContactFilterIsolationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = [
+            get_user_model().objects.create_user(username=username)
+            for username in ("first", "second", "sparse", "empty")
+        ]
+        cls.contacts = []
+        for user in cls.users:
+            tags = Contact.Tag.values
+            if user.username == "sparse":
+                tags = [Contact.Tag.LEAD]
+            elif user.username == "empty":
+                tags = []
+            for tag in tags:
+                identifier = f"{user.username}-{tag}"
+                cls.contacts.append(Contact.objects.create(
+                    owner=user,
+                    name=f"Name {identifier}",
+                    company=f"Company {identifier}",
+                    role=f"Role {identifier}",
+                    email=f"{identifier}@example.test",
+                    tag=tag,
+                    note=f"Private note {identifier}",
+                ))
+
+    def assert_visible_contacts(self, user, params):
+        response = self.client.get(reverse("contacts"), params)
+        self.assertEqual(response.status_code, 200)
+        selected_tag = params.get("tag", "")
+        expected = [
+            contact for contact in self.contacts
+            if contact.owner_id == user.pk
+            and (not selected_tag or contact.tag == selected_tag)
+        ]
+        # Verify both the data passed to the template and the rendered fields.
+        with self.subTest(surface="context"):
+            self.assertCountEqual(response.context["contacts"], expected)
+        with self.subTest(surface="page"):
+            for contact in self.contacts:
+                assertion = self.assertContains if contact in expected else self.assertNotContains
+                for field in ("name", "company", "role", "email", "note"):
+                    assertion(response, getattr(contact, field))
+
+    def test_tag_filters_preserve_contact_isolation_for_every_account(self):
+        # Shared tags catch leaks; sparse/empty accounts catch foreign-only matches.
+        for user in self.users:
+            self.client.force_login(user)
+            for tag in Contact.Tag.values:
+                with self.subTest(user=user.username, tag=tag):
+                    self.assert_visible_contacts(user, {"tag": tag})
+
+    def test_unfiltered_and_unknown_tag_requests_preserve_contact_isolation(self):
+        for user in self.users:
+            self.client.force_login(user)
+            for params in ({}, {"tag": ""}, {"tag": "unknown-tag"}):
+                with self.subTest(user=user.username, params=params):
+                    self.assert_visible_contacts(user, params)
