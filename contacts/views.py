@@ -5,6 +5,7 @@ from django.views.decorators.http import require_POST
 from .models import Contact
 from .suggestions import suggest_tag
 from .providers import configured_provider
+from .observability import suggest_observed
 from django.conf import settings
 
 
@@ -30,7 +31,7 @@ def contact_list(request):
 @require_POST
 def suggest_contact_tag(request, pk):
     contact = get_object_or_404(Contact, pk=pk, owner=request.user)
-    result = suggest_tag(contact.note, provider=configured_provider())
+    result = suggest_observed(contact.note, provider=configured_provider())
     context = contact_context(request.user)
     context.update(suggestion_contact_id=contact.pk, suggestion=result)
     return render(request, "contacts.html", context)

@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from contacts.evaluation import validate_dataset
 from contacts.providers import LabelProvider, PROMPTS
-from contacts.suggestions import suggest_tag
+from contacts.observability import suggest_observed, trace_client
 
 
 class Command(BaseCommand):
@@ -45,12 +45,14 @@ class Command(BaseCommand):
         for case in cases:
             before = len(provider.records)
             start = perf_counter()
-            result = suggest_tag(case["note"], provider=provider)
+            result = suggest_observed(case["note"], provider=provider)
             rows.append({"id": case["id"], "split": case["split"], "expected": case["expected"],
                          "actual": result.tag, "error": result.error,
                          "correct": result.error is None and result.tag == case["expected"],
                          "latency_ms": round((perf_counter()-start)*1000, 1),
                          "model_call": provider.records[-1] if len(provider.records)>before else None})
+        if trace_client():
+            trace_client().flush()
         score = sum(row["correct"] for row in rows) / len(rows)
         report = {"run_at": datetime.now(timezone.utc).isoformat(), "provider": o["provider"],
                   "notice": "OFFLINE FAKE: not a model benchmark" if o["provider"] == "fake" else "Live API responses",

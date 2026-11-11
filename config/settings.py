@@ -9,6 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Tests must never load personal credentials or contact external services.
 if "test" not in sys.argv:
     load_dotenv(BASE_DIR / ".env", override=False)
+if "test" in sys.argv:
+    os.environ["DEMO_TRACING"] = "0"
 AI_PROVIDER = "fake" if "test" in sys.argv else os.getenv("AI_PROVIDER", "fake")
 AI_MODEL = os.getenv("AI_MODEL", "")
 AI_PROMPT = os.getenv("AI_PROMPT", "p2")

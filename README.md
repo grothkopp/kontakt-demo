@@ -130,3 +130,23 @@ npm run openspec -- validate <change> --strict
 Structural validation does not replace a review of the requirements. After review,
 use `/opsx:apply`; archive the change only after verifying the implementation.
 This backup starts from `main`, without the filter from the exercise PR.
+
+## Runtime observability
+
+On `sg/demo-03-langfuse`, follow [the Langfuse rehearsal guide](docs/LANGFUSE-DEMO.md).
+Tracing is opt-in and the app works offline without keys. Controlled slow, timeout
+and invalid-output scenarios help rehearse the investigation without introducing
+bugs into the application's ordinary path.
+
+## Demo branches
+
+| Branch | Purpose |
+| --- | --- |
+| `sg/archive-before-quality-observability` | Exact preserved checkout before this rework; includes the previously committed app-file deletions. Historical snapshot, not a runnable demo. |
+| `sg/demo-01-filter-bugs` | Original intentional filter defects, preserved independently. |
+| `sg/demo-02-ai-labels` | Prepared label feature, real provider adapter and repeatable evals. |
+| `sg/demo-03-langfuse` | Stage 02 plus optional tracing and controlled investigation scenarios. |
+
+Stop the development server before switching branches. Run `uv sync --locked`,
+migrations and fixtures for the selected runnable stage. Stage 02 starts from the
+existing AI feature backup; it is not a cumulative fix of the intentional filter PR.
