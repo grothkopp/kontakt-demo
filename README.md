@@ -143,7 +143,8 @@ bugs into the application's ordinary path.
 | Branch | Purpose |
 | --- | --- |
 | `sg/archive-before-quality-observability` | Exact preserved checkout before this rework; includes the previously committed app-file deletions. Historical snapshot, not a runnable demo. |
-| `sg/demo-01-filter-bugs` | Original intentional filter defects, preserved independently. |
+| `sg/demo-00-original-pr` | Original PR with both intentional defects and six passing tests. |
+| `sg/demo-01-filter-bugs` | Preserved later workshop state: ownership already fixed, count defect still present; includes browser tests. |
 | `sg/demo-02-ai-labels` | Prepared label feature, real provider adapter and repeatable evals. |
 | `sg/demo-03-langfuse` | Stage 02 plus optional tracing and controlled investigation scenarios. |
 
