@@ -1,0 +1,23 @@
+name: Quality checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.8.22'
+      - run: uv sync --locked
+      - run: uv run manage.py check
+      - run: uv run manage.py makemigrations --check --dry-run
+      - run: uv run manage.py test
+      - name: Offline eval harness smoke check (not model quality)
+        run: uv run manage.py compare_labels --output output/fake.json --gate --min-accuracy 0.75
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: offline-eval
+          path: output/*.json

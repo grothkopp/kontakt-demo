@@ -29,11 +29,11 @@
             <form class="suggestion-form" method="post" action="{% url 'suggest_contact_tag' contact.pk %}">
               {% csrf_token %}
               <button class="suggestion-button" type="submit" aria-label="Suggest tag for {{ contact.name }}">Suggest tag</button>
-              <span>Offline demo · Nothing is saved</span>
+              <span>{{ provider_label }} · Nothing is saved</span>
             </form>
             {% if suggestion_contact_id == contact.pk %}
               <p class="suggestion-result" role="status">
-                <strong>Demo suggestion:</strong>
+                <strong>Suggested tag:</strong>
                 {% if suggestion.error %}
                   Suggestion unavailable. Please try again.
                 {% elif suggestion.tag %}

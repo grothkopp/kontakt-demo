@@ -49,17 +49,7 @@ Requests use authenticated, CSRF-protected POSTs and look up the contact by its
 owner before passing only the stored note to the provider. No contact fields are
 saved, and a fresh visit to the list clears the result.
 
-The UI labels this as an **offline demo**. Its deterministic fake recognizes six
-fixed example notes and abstains for other notes, including the baseline fixtures.
-There is no live AI service, API key, generated explanation, or apply action.
-
-```sh
-uv run python manage.py eval_tag_suggestions
-```
-
-See [the eval guide](evals/README.md) for example notes, label meanings, acceptance
-scenario/test links, the observed baseline, and prerequisites for future live-model
-evaluation. Fake results demonstrate the eval machinery, not live-model quality.
+The default is an explicitly labelled offline fake. This branch also contains a real OpenAI adapter, fixed English eval cases and a prompt-comparison command. See [the AI demo guide](docs/AI-DEMO.md) for setup, real runs and the offline fallback. Live API calls require your own credentials and an explicit model ID.
 
 ## Data and reset
 

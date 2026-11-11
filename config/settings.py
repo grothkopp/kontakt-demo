@@ -1,8 +1,19 @@
 """Settings for the local workshop demo. Bind runserver to localhost."""
+import os
+import sys
+from dotenv import load_dotenv
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Tests must never load personal credentials or contact external services.
+if "test" not in sys.argv:
+    load_dotenv(BASE_DIR / ".env", override=False)
+AI_PROVIDER = "fake" if "test" in sys.argv else os.getenv("AI_PROVIDER", "fake")
+AI_MODEL = os.getenv("AI_MODEL", "")
+AI_PROMPT = os.getenv("AI_PROMPT", "p2")
+AI_REASONING_EFFORT = os.getenv("AI_REASONING_EFFORT", "")
+
 # A stable local secret, generated once and excluded from Git.
 secret_file = BASE_DIR / ".local-secret-key"
 try:

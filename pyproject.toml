@@ -3,4 +3,9 @@ name = "contact-demo"
 version = "0.1.0"
 description = "A small Django contact app for a quality and observability workshop"
 requires-python = ">=3.13"
-dependencies = ["django>=5.2,<5.3"]
+dependencies = [
+    "django>=5.2,<5.3",
+    "langfuse>=5.2.0",
+    "openai>=3.49.0",
+    "python-dotenv>=1.2.4",
+]

@@ -95,14 +95,14 @@ class SuggestionViewTests(TestCase):
             with self.subTest(tag=tag):
                 self.provider.return_value = {"tag": tag}
                 response = self.post()
-                self.assertContains(response, "Demo suggestion:", count=1)
+                self.assertContains(response, "Suggested tag:", count=1)
                 self.assertEqual(response.context["suggestion"].tag, tag)
                 self.assertContains(response, 'class="tag tag-customer">Customer</span>')
                 self.assertContains(response, "Nothing is saved")
                 self.assert_unchanged()
         self.provider.reset_mock()
         response = self.client.get(reverse("contacts"))
-        self.assertNotContains(response, "Demo suggestion:")
+        self.assertNotContains(response, "Suggested tag:")
         self.provider.assert_not_called()
 
     def test_abstention_and_failures_do_not_expose_raw_output(self):
